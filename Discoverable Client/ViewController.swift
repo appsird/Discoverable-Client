@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Discoverable
 
 class ViewController: UIViewController {
 
@@ -14,12 +15,58 @@ class ViewController: UIViewController {
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var connectButton: UIButton!
     
+    var connectionService = Discoverable()
+    var isConnected = false
+    
     override func viewDidLoad() {
+        print("viewDidLoad")
         super.viewDidLoad()
+        
+        connectionService.delegate = self
+        
         // Do any additional setup after loading the view.
         sendButton.layer.cornerRadius = 12.5
         connectButton.layer.cornerRadius = 12.5
     }
 
+    @IBAction func toggleConnection(_ sender: Any) {
+        if (!isConnected) {
+            print("!isConnected")
+            connectionService.discover(type: "_discoverable._udp", on: 1024)
+        } else {
+            print("isConnected")
+           connectionService.close()
+        }
+    }
+    
+    @IBAction func send(_ sender: Any) {
+        guard (textField.text != nil) else {
+            return
+        }
+        print("send")
+        connectionService.send(textField.text!)
+    }
+}
 
+extension ViewController: DiscoverableDelegate {
+    func connectionState(state: Discoverable.State) {
+        DispatchQueue.main.async {
+            switch state {
+            case .connected:
+                print("connected")
+                self.isConnected = true
+                self.connectButton.setTitle("Disconnect", for: .normal)
+                self.sendButton.isEnabled = true
+            default:
+                print("not connected")
+                self.isConnected = false
+                self.connectButton.setTitle("Connect", for: .normal)
+                self.sendButton.isEnabled = false
+            }
+        }
+    }
+    
+    func connectionStrength(strength: Float) {
+        
+    }
 }

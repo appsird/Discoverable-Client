@@ -20,6 +20,12 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_discoverable._udp</string>
+	</array>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Discoverable Client uses the local network to connect to kai devices</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
